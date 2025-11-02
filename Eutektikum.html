@@ -308,10 +308,12 @@ function drawDiagram(comp, temp, solid, liquid, solidComp, liquidComp, festA, fe
   ctx.font = "12px Arial";
   ctx.fillText(`S ${Math.round(liquid)}% (${aktuellesSystem.elements.A} ${(100 - liquidComp).toFixed(0)}%, ${aktuellesSystem.elements.B} ${liquidComp.toFixed(0)}%)`, x + textOffsetX, y + 15);
   ctx.fillText(`F ${Math.round(solid)}% (${aktuellesSystem.elements.A} ${festA.toFixed(0)}%, ${aktuellesSystem.elements.B} ${festB.toFixed(0)}%, E ${festE.toFixed(0)}%)`, x + textOffsetX, y + 30);
+  ctx.fillText(`T ${Math.round(temp)}°C`, x + textOffsetX, y + 45);
   ctx.restore();
 }
    wechselMaterial(); // Initialer Aufruf
   </script>
 </body>
 </html>
+
 
