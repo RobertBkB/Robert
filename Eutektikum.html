@@ -160,30 +160,30 @@ function update() {
       festB = 0;
     }
 
-   solidComp = (festB * 100 + festE * eutektikum.comp) / (festA + festB + festE);
-
+    solidComp = (festB * 100 + festE * eutektikum.comp) / (festA + festB + festE);
     liquidComp = 0;
   } else {
     // Zweiphasengebiet: fest + flüssig
     liquid = (temp - solidusTemp) / (liquidusTemp - solidusTemp) * 100;
     solid = 100 - liquid;
 
-    const deltaComp = Math.abs(comp - eutektikum.comp);
-    const liquidCompShift = deltaComp * (liquid / 100);
-    const solidCompShift = deltaComp * (solid / 100);
-
+    // feste Phase ist konstant
     if (comp < eutektikum.comp) {
-      solidComp = eutektikum.comp - solidCompShift;
-      liquidComp = eutektikum.comp - liquidCompShift;
+      solidComp = 0; // reines Pb
     } else if (comp > eutektikum.comp) {
-      solidComp = eutektikum.comp + solidCompShift;
-      liquidComp = eutektikum.comp + liquidCompShift;
+      solidComp = 100; // reines Sn
     } else {
-      solidComp = eutektikum.comp;
-      liquidComp = eutektikum.comp;
+      solidComp = eutektikum.comp; // eutektisch
     }
 
-    // In Zweiphasengebiet keine Festphasen-Zusammensetzung anzeigen
+    // flüssige Phase liegt auf Liquiduslinie → berechne rückwärts
+    if (comp < eutektikum.comp) {
+      liquidComp = 61.9 * (327 - temp) / (327 - 183);
+    } else {
+      liquidComp = 61.9 + (temp - 183) / (327 - 183) * (100 - 61.9);
+    }
+
+    // keine Festphasenanteile anzeigen im Zweiphasengebiet
     festA = 0;
     festB = 0;
     festE = 0;
@@ -201,6 +201,7 @@ function update() {
   drawDiagram(comp, temp, solid, liquid, solidComp, liquidComp, festA_rel, festB_rel, festE_rel);
   drawPie(solid, liquid, solidComp, liquidComp, festA_rel, festB_rel, festE_rel);
 }
+
 
 
 function drawPie(solid, liquid, solidComp, liquidComp, festA, festB, festE) {
