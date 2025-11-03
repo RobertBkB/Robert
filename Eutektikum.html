@@ -31,10 +31,10 @@
       font-size: 1.2em;
       padding: 10px 15px;
     }
+    
   </style>
 </head>
 <body>
-
   <h1>Kristallgemische</h1>
   <select id="materialSelect" onchange="wechselMaterial()" style="width: 100%; max-width: 400px;">
     <option value="Pb-Sn">Blei (Pb) – Zinn (Sn) Eutektikum: 61,9%Pb, 183°C</option>
@@ -178,10 +178,21 @@ function update() {
 
     // flüssige Phase liegt auf Liquiduslinie → berechne rückwärts
     if (comp < eutektikum.comp) {
-      liquidComp = 61.9 * (327 - temp) / (327 - 183);
-    } else {
-      liquidComp = 61.9 + (temp - 183) / (327 - 183) * (100 - 61.9);
-    }
+  // Rückwärtsrechnung für linke Seite
+  const x = comp;
+  const T_A = aktuellesSystem.getLiquidusTemp(0); // reines A
+  const T_E = eutektikum.temp;
+  const x_E = eutektikum.comp;
+  liquidComp = x_E * (T_A - temp) / (T_A - T_E);
+} else {
+  // Rückwärtsrechnung für rechte Seite
+  const x = comp;
+  const T_B = aktuellesSystem.getLiquidusTemp(100); // reines B
+  const T_E = eutektikum.temp;
+  const x_E = eutektikum.comp;
+  liquidComp = x_E + (temp - T_E) / (T_B - T_E) * (100 - x_E);
+}
+
 
     // keine Festphasenanteile anzeigen im Zweiphasengebiet
     festA = 0;
@@ -330,4 +341,11 @@ ctx.fillText(`Element: ${aktuellesSystem.elements.B}`, canvas.width / 2, 385);
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
 
